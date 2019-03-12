@@ -4,7 +4,44 @@ import java.util.Scanner;
 
 public class GameLogic {
 
-    public static int MOVE = 0;//счетчику ходов
+    private static final String GREETING ="Привет. Вы играете крестиками. Компьютер будет играть ноликами";
+    private static final String  GAME_RULES_1 = "Вот игровое поле, нужно вводить координаты ячейки, куда будете ставить Х .";
+    private static final String  GAME_RULES_2 = "Координаты ячейки вводить цифрами от 0 до 2 через пробел, затем нажать enter.";
+
+    public static int MOVE = 0;//счетчик ходов, возможно достаточно private?
+
+    Field f; // ссылка на игровое поле
+
+    public GameLogic(){
+        f = new Field(); //создаем игровое поле
+        System.out.println(GREETING); // выводим сообщения перед стартом
+        System.out.println(GAME_RULES_1);
+        System.out.println(GAME_RULES_2);
+        f.drawField();//рисуем игровое поле
+
+
+    }
+
+    public void playGame(){
+     for(;GameLogic.MOVE<9;)//проверка на кол-во ходов меньше 9
+        {
+
+            if(humanMove()) {    //ход игрока  + проверка выигрышной комбинации
+                System.out.println("Выиграли крестики");
+                break;
+            }
+
+
+            if(pcMove()){  //ход компьютера + проверка выигрышной комбинации
+                System.out.println("Выиграли нолики");
+                break;
+            }
+
+        }
+
+
+
+    }
 
     private int[] getCoordinates(){  // считываем координаты с клавиатуры
         Scanner sc = new Scanner(System.in);
@@ -13,8 +50,9 @@ public class GameLogic {
         return new int[]{x, y};
 }
 
-    private void humanMove(Field f){//ход игрока
+    private boolean humanMove(){//ход игрока
 
+        System.out.println("Сейчас Ваш ход");
         System.out.println("Введите коорд пустой клетки в виде пары чисел, разделенных пробелом");
 
          int[] xy;
@@ -29,10 +67,29 @@ public class GameLogic {
             f.setItem(xy[0], xy[1], Field.CROSS);
         ++GameLogic.MOVE;
             f.drawField();
+            return checkWinner();
     }
 
+    private boolean pcMove() {
 
-    private boolean checkWinner(Field f) { // проверка выигрышных комбинаций
+        int x, y;
+        do {
+            x = (int) (Math.random() * 3);
+            y = (int) (Math.random() * 3);
+        }
+        while (f.getItem(x, y) != -1);
+
+
+        System.out.println();
+        System.out.println("PC moves:");
+        f.setItem(x, y, Field.ZERO);
+        ++GameLogic.MOVE;
+        f.drawField();
+        return checkWinner();
+
+    }
+
+    private boolean checkWinner() {
 
         //int[] checksum = new int[9];
         int[][] board = f.getBoard();
@@ -61,58 +118,6 @@ public class GameLogic {
     }
 
 
-    public void playGame(){
-        System.out.println("Привет. Вы играете крестиками. Компьютер будет играть ноликами");
-        System.out.println("Вот игровое поле, нужно вводить координаты ячейки, куда будете ставить Х .");
-        System.out.println("Координаты ячейки вводить цифрами от 0 до 2 через пробел, затем нажать enter.");
-        Field f = new Field(); //создаем игровое поле
-        f.drawField();//рисуем его
-        boolean cond = true;//условие отсутствия выигрышной комбинации
-       String s;
-        do
-        {
-
-            System.out.println("Сейчас Ваш ход");
-            humanMove(f); // humanMove();
-            s = (GameLogic.MOVE+1)%2==0 ? "X": "O";// отслеживаем по ходам, кто выиграл
-
-
-            if(checkWinner(f)) {    //checkWinner()
-                System.out.println("Выиграли " + " "+ s);
-                break;
-            }
-
-            pcMove(f);              //pcMove();
-            s = (GameLogic.MOVE+1)%2==0 ? "X": "O";// отслеживаем по ходам, кто выиграл
-
-            if(checkWinner(f)){   //checkWinner()
-                System.out.println("Выиграли " + " "+ s);
-                break;
-            }
-
-        } while(GameLogic.MOVE<9);
-
-        System.out.println("Будете играть еще?");
-
-    }
-
-    private void pcMove(Field f) {
-
-        int x, y;
-        do {
-            x = (int) (Math.random() * 3);
-            y = (int) (Math.random() * 3);
-        }
-        while (f.getItem(x, y) != -1);
-
-
-        System.out.println();
-        System.out.println("PC moves:");
-        f.setItem(x, y, Field.ZERO);
-        ++GameLogic.MOVE;
-        f.drawField();
-
-    }
 
 
 

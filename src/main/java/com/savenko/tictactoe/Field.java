@@ -35,17 +35,15 @@ public class Field {
 //Нарисовать игровое поле
 
     public void drawField() {
-        System.out.println("\n");
 
-        System.out.print("  " + "0 " + "1 " + "2 ");
         System.out.println();
+        int shift = 1;
         for (int i = 0; i < 3 ; i++) {
-            System.out.print(i + " ");
             for (int j = 0; j < 3; j++) {
                 String c ="";
                 switch (board[i][j]) {
                     case EMPTY:
-                        c = "-";
+                        c = "" + (shift + j);
                         break;
                     case CROSS:
                         c = "X";
@@ -56,6 +54,7 @@ public class Field {
                 }
                 System.out.print(c + " ");
             }
+            shift += 3;
             System.out.println();
         }
 

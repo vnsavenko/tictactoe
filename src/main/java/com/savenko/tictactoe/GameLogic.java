@@ -5,8 +5,8 @@ import java.util.Scanner;
 public class GameLogic {
 
     private static final String GREETING ="Привет. Вы играете крестиками. Компьютер будет играть ноликами";
-    private static final String  GAME_RULES_1 = "Вот игровое поле, нужно вводить координаты ячейки, куда будете ставить Х .";
-    private static final String  GAME_RULES_2 = "Координаты ячейки вводить цифрами от 0 до 2 через пробел, затем нажать enter.";
+    private static final String  GAME_RULES_1 = "Для хода введите номер ячейки и нажмите enter.";
+    private static final String  GAME_RULES_2 = "";
 
     public static int MOVE = 0;//счетчик ходов, возможно достаточно private?
 
@@ -43,15 +43,24 @@ public class GameLogic {
 
     private int[] getCoordinates(){  // считываем координаты с клавиатуры
         Scanner sc = new Scanner(System.in);
-        int x = sc.nextInt();
-        int y = sc.nextInt();
-        return new int[]{x, y};
+        int cellNumber = sc.nextInt();
+        int x = 0;
+        int y = 0;
+        int shift = 1;              //построчный сдвиг
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (j + shift == cellNumber){
+                    x = i; y = j;
+                }
+            }
+            shift+=3;
+        }
+     return new int[]{x, y};
 }
 
     private boolean humanMove(){//ход игрока + проверка на выигрыш
 
         System.out.println("Сейчас Ваш ход");
-        System.out.println("Введите коорд пустой клетки в виде пары чисел, разделенных пробелом");
 
          int[] xy;
 

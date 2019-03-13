@@ -39,8 +39,6 @@ public class GameLogic {
 
         }
 
-
-
     }
 
     private int[] getCoordinates(){  // считываем координаты с клавиатуры
@@ -50,7 +48,7 @@ public class GameLogic {
         return new int[]{x, y};
 }
 
-    private boolean humanMove(){//ход игрока
+    private boolean humanMove(){//ход игрока + проверка на выигрыш
 
         System.out.println("Сейчас Ваш ход");
         System.out.println("Введите коорд пустой клетки в виде пары чисел, разделенных пробелом");
@@ -67,10 +65,10 @@ public class GameLogic {
             f.setItem(xy[0], xy[1], Field.CROSS);
         ++GameLogic.MOVE;
             f.drawField();
-            return checkWinner();
+            return checkWin(); // проверка на выигрыш
     }
 
-    private boolean pcMove() {
+    private boolean pcMove() {//ход компьютера + проверка на выигрыш
 
         int x, y;
         do {
@@ -85,60 +83,59 @@ public class GameLogic {
         f.setItem(x, y, Field.ZERO);
         ++GameLogic.MOVE;
         f.drawField();
-        return checkWinner();
+        return checkWin();//проверка на выигрыш
 
     }
 
-    private boolean checkWinner() {
+    private boolean checkWin(){//проверка на выигрыш
 
-        //int[] checksum = new int[9];
+        return checkRow()||checkCol()||checkDiags();
+
+        }
+
+    private boolean checkCol(){// проверка комбинации в колонках
         int[][] board = f.getBoard();
-        int diag = 0;//сумма в гл диагонали
-        int otherdiag = 0;//сумма в другой диагонали
 
         for (int i = 0; i < 3; i++) {
-
-            int sum = 0;// сумма значений в столбцах
-            int str = 0;// сумма значений в строках
+            int sum = 0;
 
             for (int j = 0; j < 3; j++) {
                 sum+= board[j][i];//сумма столбцов
-                str+= board[i][j];//сумма строк
-                if (i == j ) diag+= board[i][j];//сумма главной диагонали
-                if (i + j == 2) otherdiag+= board[i][j];// сумма другой диагонали
-
             }
 
-            if((sum == 9)||(sum==0)||(str==9)||(str==0))
-                return true;
+            if (((sum == 9) || (sum == 0))) return true;
         }
-        if((diag==9)||(diag==0)||(otherdiag==9)||(otherdiag==0)) return true;
-
         return false;
     }
 
+    private boolean checkRow(){// проверка в рядах
 
+        int[][] board = f.getBoard();
 
+        for (int i = 0; i < 3; i++) {
+            int sum = 0;
+            for (int j = 0; j < 3; j++) {
+                sum+= board[i][j];//сумма строк
+            }
+        if (((sum == 9) || (sum == 0))) return true;
+        }
+       return false;
+    }
 
+    private boolean checkDiags(){// проверка в диагоналях
 
+        int[][] board = f.getBoard();
+        int diag = 0;
+        int otherdiag = 0;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (i == j ) diag+= board[i][j];//сумма главной диагонали
+                if (i + j == 2) otherdiag+= board[i][j];// сумма другой диагонали
+            }
+        }
 
-
-/*
--2 создаем доску
--1 отрисовываем доску
-выводим сообщение, что первыми ходят крестики,
-в цикле:
-0.  просим ввести координаты ячейки для крестика
-1. принимаем с клавиатуры координаты, проверяем, что ячейка пуста, ставим крестик. Если непуста, сообщаем об это и шаг 1.
-2. отрисовываем доску
-3.  просим ввести координаты ячейки для крестика
-4. принимаем с клавиатуры координаты, проверяем, что ячейка пуста, ставим крестик. Если непуста, сообщаем об это и шаг 3.
-5. отрисовываем доску.
-6. проверяем доску на выигрыш. если да то выводим кто выиграл. переходим к шагу 8
-7 проверяем доску на количество свободных мест. если их нет и выигрыш не состоялся, то выводим сообщение о ничье
-8. спрашиваем, играть ли заново, если да, то на шаг "-2", если нет, то выход
-
-
-  */
+        if((diag==9)||(diag==0)||(otherdiag==9)||(otherdiag==0)) return true;
+        return false;
+    }
 
 }
